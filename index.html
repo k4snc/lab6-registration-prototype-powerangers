@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElekSure - Barangay Election Transparency</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES (Theme) --- */
+        :root {
+            --primary-red: #CE1126;
+            --primary-blue: #0a3d9b;
+            --primary-yellow: #F4C430;
+            --gradient-main: linear-gradient(135deg, #0a3d9b, #CE1126);
+            --bg-gray: #F3F4F6;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- PHONE SIMULATOR FRAME --- */
+        #phone-frame {
+            width: 375px;
+            height: 812px;
+            background-color: var(--white);
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #111;
+        }
+
+        #notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background-color: #111;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 100;
+        }
+
+        .app-container {
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- GLOBAL UI ELEMENTS --- */
+        h2 { 
+            font-size: 24px; 
+            color: var(--text-dark); 
+            margin-bottom: 5px; 
+            font-weight: 800; 
+            text-align: center; 
+        }
+        p { 
+            color: var(--text-light); 
+            font-size: 14px; 
+            line-height: 1.5; 
+            margin-bottom: 16px; 
+            text-align: center; 
+        }
+        
+        .logo-img {
+            width:250px;
+            height: auto;
+            display: block;
+            margin: 1px auto 1px auto;
+        }
+
+        .slogan {
+            font-size: 13px;
+            color: #000000; 
+            font-weight: 500; 
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Inputs */
+        .input-group { 
+            margin-bottom: 16px; 
+            text-align: left; 
+            position: relative; 
+        }
+        label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--text-dark); 
+            margin-bottom: 6px; 
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: var(--radius);
+            font-size: 14px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        input:focus, select:focus { 
+            border-color: var(--primary-blue); 
+        }
+        
+        input.input-error, select.input-error {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        /* Password Toggle Eye */
+        .password-wrapper { 
+            position: relative; 
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 32px;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 5px; 
+        }
+
+        /* Forgot Password Link */
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 12px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        /* ADDED: Hover underline for forgot password */
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-main);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:active { 
+            transform: scale(0.98); 
+        }
+        
+        .btn-primary:disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .signup-prompt {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #000; 
+        }
+        .signup-link {
+            color: var(--primary-blue); 
+            font-weight: 700;
+            cursor: pointer;
+        }
+        /* Hover underline for sign up link */
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #d1d5db;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-top: 15px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Error/Success Message Box */
+        .error-msg {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .success-msg {
+            background-color: #ecfdf5;
+            color: #047857;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            width: 100%;
+            background-color: #e5e7eb;
+            height: 6px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-main);
+            border-radius: 10px;
+            width: 25%;
+            transition: width 0.4s ease;
+        }
+        .step-indicator {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: -20px;
+            margin-bottom: 20px;
+        }
+
+        /* --- SCREENS --- */
+        .screen { 
+            display: none; 
+            animation: fadeIn 0.4s ease; 
+        }
+        .screen.active { 
+            display: block; 
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .role-card {
+            border: 2px solid #e5e7eb;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .role-card:hover { 
+            border-color: var(--primary-blue); 
+            background-color: #eff6ff; 
+        }
+        .role-card.selected { 
+            border-color: var(--primary-blue); 
+            background-color: #eff6ff; 
+            box-shadow: 0 4px 12px rgba(0,56,168,0.1); 
+        }
+        .role-icon { 
+            font-size: 24px; 
+            color: var(--primary-blue); 
+        }
+        
+        .checkbox-group { 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 10px; 
+            margin: 20px 0; 
+        }
+        .checkbox-group input { 
+            width: 20px; 
+            height: 20px; 
+            margin-top: 2px; 
+        }
+        
+        /* Success Screen */
+        .success-icon {
+            font-size: 80px;
+            color: #10b981;
+            margin: 30px auto 20px auto;
+            display: block;
+            text-align: center;
+        }
+        
+        .success-heading {
+            font-size: 28px;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .welcome-big {
+            font-size: 22px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 10px;
+            margin-top: 0;
+            line-height: 1.2;
+        }
+        .construction-card {
+            background-color: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 20px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .construction-card i { 
+            font-size: 24px; 
+            margin-bottom: 5px; 
+        }
+
+        /* Dashboard small tweaks */
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="phone-frame">
+        <div id="notch"></div>
+
+        <div class="app-container">
+
+            <div id="screen-login" class="screen active">
+                <div style="margin-top: 40px;"></div>
+                
+                <img src="https://uploads.onecompiler.io/4458678hm/44585jg9f/ElekSure.png" alt="ElekSure Logo" class="logo-img">
+                
+                <h2>Welcome Back!</h2>
+                <p></p>
+
+                <div id="login-error" class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> Credentials do not match our records.
+                </div>
+
+                <div class="input-group">
+                    <label>Email/Username</label>
+                    <input type="text" id="login-user" placeholder="Enter your email/username">
+                </div>
+                
+                <div class="input-group password-wrapper">
+                    <label>Password</label>
+                    <input type="password" id="login-pass" placeholder="••••••••">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('login-pass', this)"></i>
+                </div>
+                
+                <a class="forgot-link" onclick="showScreen('screen-forgot')">Forgot Password?</a>
+
+                <button class="btn-primary" onclick="validateLogin()">Sign In</button>
+                
+                <div class="signup-prompt">
+                    Don't have an account? <span class="signup-link" onclick="goToSignup()">Sign Up</span>
+                </div>
+            </div>
+
+            <div id="screen-forgot" class="screen">
+                <div style="margin-top: 40px;"></div>
+                
+                <h2>Reset Your Password</h2>
+                <p>Enter your email address and we’ll send you a link to reset your password.</p>
+                
+                <div id="forgot-success" class="success-msg">
+                    <i class="fas fa-check-circle"></i> A reset link has been sent to your email.
+                </div>
+                <div id="forgot-error" class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> Please enter your email address.
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="forgot-email" placeholder="Enter your email">
+                </div>
+
+                <button class="btn-primary" onclick="validateForgotPassword()">Send Reset Link</button>
+                <button class="btn-secondary" onclick="goToLogin()">Back to Login</button>
+
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
+                </div>
+            </div>
+
+
+            <div id="screen-step1" class="screen">
+                <div class="progress-container"><div class="progress-fill" style="width: 25%"></div></div>
+                <div class="step-indicator">Step 1 of 4</div>
+
+                <h2>Personal Information</h2>
+                <p>Please fill in your details below.</p>
+                
+                <div id="step1-error" class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> Please enter your details.
+                </div>
+
+                <div class="input-group">
+                    <label>Last Name</label>
+                    <input type="text" id="reg-lastname" class="required-step1" placeholder="e.g., Dela Cruz" oninput="checkStep1()">
+                </div>
+                <div class="input-group">
+                    <label>First Name</label>
+                    <input type="text" id="reg-firstname" class="required-step1" placeholder="e.g., Juan" oninput="checkStep1()">
+                </div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" class="required-step1" placeholder="Create a username" oninput="checkStep1()">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" class="required-step1" placeholder="juan@example.com" oninput="checkStep1()">
+                </div>
+
+                <div class="input-group">
+                    <label>Barangay</label>
+                    <select id="reg-barangay" class="required-step1" onchange="checkStep1()">
+                        <option value="">Select Barangay</option>
+                        <option value="Agusan">Agusan</option>
+                        <option value="Baikingon">Baikingon</option>
+                        <option value="Balubal">Balubal</option>
+                        <option value="Balulang">Balulang</option>
+                        <option value="Barangay 1">Barangay 1</option>
+                        <option value="Barangay 2">Barangay 2</option>
+                        <option value="Barangay 3">Barangay 3</option>
+                        <option value="Barangay 4">Barangay 4</option>
+                        <option value="Barangay 5">Barangay 5</option>
+                        <option value="Barangay 6">Barangay 6</option>
+                        <option value="Barangay 7">Barangay 7</option>
+                        <option value="Barangay 8">Barangay 8</option>
+                        <option value="Barangay 9">Barangay 9</option>
+                        <option value="Barangay 10">Barangay 10</option>
+                        <option value="Barangay 11">Barangay 11</option>
+                        <option value="Barangay 12">Barangay 12</option>
+                        <option value="Barangay 13">Barangay 13</option>
+                        <option value="Barangay 14">Barangay 14</option>
+                        <option value="Barangay 15">Barangay 15</option>
+                        <option value="Barangay 16">Barangay 16</option>
+                        <option value="Barangay 17">Barangay 17</option>
+                        <option value="Barangay 18">Barangay 18</option>
+                        <option value="Barangay 19">Barangay 19</option>
+                        <option value="Barangay 20">Barangay 20</option>
+                        <option value="Barangay 21">Barangay 21</option>
+                        <option value="Barangay 22">Barangay 22</option>
+                        <option value="Barangay 23">Barangay 23</option>
+                        <option value="Barangay 24">Barangay 24</option>
+                        <option value="Barangay 25">Barangay 25</option>
+                        <option value="Barangay 26">Barangay 26</option>
+                        <option value="Barangay 27">Barangay 27</option>
+                        <option value="Barangay 28">Barangay 28</option>
+                        <option value="Barangay 29">Barangay 29</option>
+                        <option value="Barangay 30">Barangay 30</option>
+                        <option value="Barangay 31">Barangay 31</option>
+                        <option value="Barangay 32">Barangay 32</option>
+                        <option value="Barangay 33">Barangay 33</option>
+                        <option value="Barangay 34">Barangay 34</option>
+                        <option value="Barangay 35">Barangay 35</option>
+                        <option value="Barangay 36">Barangay 36</option>
+                        <option value="Barangay 37">Barangay 37</option>
+                        <option value="Barangay 38">Barangay 38</option>
+                        <option value="Barangay 39">Barangay 39</option>
+                        <option value="Barangay 40">Barangay 40</option>
+                        <option value="Bayabas">Bayabas</option>
+                        <option value="Bayanga">Bayanga</option>
+                        <option value="Besigan">Besigan</option>
+                        <option value="Bonbon">Bonbon</option>
+                        <option value="Bugo">Bugo</option>
+                        <option value="Bulua">Bulua</option>
+                        <option value="Camaman-an">Camaman-an</option>
+                        <option value="Canito-an">Canito-an</option>
+                        <option value="Carmen">Carmen</option>
+                        <option value="Consolacion">Consolacion</option>
+                        <option value="Cugman">Cugman</option>
+                        <option value="Dansolihon">Dansolihon</option>
+                        <option value="F.S. Catanico">F.S. Catanico</option>
+                        <option value="Gusa">Gusa</option>
+                        <option value="Indahag">Indahag</option>
+                        <option value="Iponan">Iponan</option>
+                        <option value="Kauswagan">Kauswagan</option>
+                        <option value="Lapasan">Lapasan</option>
+                        <option value="Lumbia">Lumbia</option>
+                        <option value="Macabalan">Macabalan</option>
+                        <option value="Macasandig">Macasandig</option>
+                        <option value="Mambuaya">Mambuaya</option>
+                        <option value="Nazareth">Nazareth</option>
+                        <option value="Pagalungan">Pagalungan</option>
+                        <option value="Pagatpat">Pagatpat</option>
+                        <option value="Patag">Patag</option>
+                        <option value="Pigsag-an">Pigsag-an</option>
+                        <option value="Puerto">Puerto</option>
+                        <option value="Puntod">Puntod</option>
+                        <option value="San Simon">San Simon</option>
+                        <option value="Tablon">Tablon</option>
+                        <option value="Taglimao">Taglimao</option>
+                        <option value="Tagpangi">Tagpangi</option>
+                        <option value="Tignapoloan">Tignapoloan</option>
+                        <option value="Tuburan">Tuburan</option>
+                        <option value="Tumpagon">Tumpagon</option>
+                    </select>
+                </div>
+
+                <button id="btn-step1" class="btn-primary" onclick="validateStep1()" disabled>Next</button>
+                <button class="btn-secondary" onclick="goToLogin()">Cancel</button>
+            </div>
+
+
+            <div id="screen-step2" class="screen">
+                <div class="progress-container"><div class="progress-fill" style="width: 50%"></div></div>
+                <div class="step-indicator">Step 2 of 4</div>
+
+                <h2>Secure Your Account</h2>
+                <p>Please set your password.</p>
+
+                <div class="input-group password-wrapper">
+                    <label>Create Password</label>
+                    <input type="password" id="reg-pass" class="required-step2" placeholder="Minimum 8 characters" oninput="checkStep2()">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('reg-pass', this)"></i>
+                </div>
+                <div class="input-group password-wrapper">
+                    <label>Confirm Password</label>
+                    <input type="password" id="reg-confirm-pass" class="required-step2" placeholder="Re-type password" oninput="checkStep2()">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('reg-confirm-pass', this)"></i>
+                </div>
+
+                <div id="pass-error" class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> Passwords do not match.
+                </div>
+                <div id="length-error" class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters.
+                </div>
+
+                <button id="btn-step2" class="btn-primary" onclick="validateStep2()" disabled>Next</button>
+                <button class="btn-secondary" onclick="goBackTo(1)">Back</button>
+            </div>
+
+
+            <div id="screen-step3" class="screen">
+                <div class="progress-container"><div class="progress-fill" style="width: 75%"></div></div>
+                <div class="step-indicator">Step 3 of 4</div>
+
+                <h2>Choose your Role</h2>
+                <p>How will you use ElekSure?</p>
+
+                <div class="role-card" id="role-voter" onclick="selectRole('voter')">
+                    <div class="role-icon"><i class="fas fa-user-check"></i></div>
+                    <div>
+                        <strong>Voter</strong>
+                        <div style="font-size: 12px; color: #666;">I want to view candidates and reports.</div>
+                    </div>
+                </div>
+
+                <div class="role-card" id="role-candidate" onclick="selectRole('candidate')">
+                    <div class="role-icon"><i class="fas fa-bullhorn"></i></div>
+                    <div>
+                        <strong>Candidate</strong>
+                        <div style="font-size: 12px; color: #666;">I want to run for office and post platforms.</div>
+                    </div>
+                </div>
+
+                <button id="btn-step3" class="btn-primary" onclick="validateStep3()" disabled>Next</button>
+                <button class="btn-secondary" onclick="goBackTo(2)">Back</button>
+            </div>
+
+
+            <div id="screen-step4" class="screen">
+                <div class="progress-container"><div class="progress-fill" style="width: 100%"></div></div>
+                <div class="step-indicator">Step 4 of 4</div>
+
+                <h2>Final Steps</h2>
+                <p>Please review the community guidelines.</p>
+
+                <div style="background: #fff; border: 1px solid #ddd; padding: 15px; height: 150px; overflow-y: scroll; border-radius: 8px; font-size: 12px; color: #555; margin-bottom: 10px;">
+                    <strong>1. Transparency:</strong> All data submitted must be accurate.<br>
+                    <strong>2. Respect:</strong> No hate speech or misinformation.<br>
+                    <strong>3. Privacy:</strong> Your data is protected under the Data Privacy Act.<br><br>
+                    By clicking register, you agree to abide by the ElekSure constitution and confirm you are a registered resident of your selected Barangay.
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-check" onchange="toggleRegisterBtn()">
+                    <label for="terms-check" style="font-weight: normal;">I agree to the Terms & Conditions and Privacy Policy.</label>
+                </div>
+
+                <button class="btn-primary" id="btn-register" disabled onclick="finalizeRegistration()">Complete Registration</button>
+                <button class="btn-secondary" onclick="goBackTo(3)">Back</button>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div id="screen-dashboard" class="screen" style="text-align: center;">
+                <div style="margin-top: 40px;"></div>
+                <img src="https://uploads.onecompiler.io/4458678hm/44585jg9f/ElekSure.png" alt="ElekSure Logo" class="logo-img">
+                <h2 id="dash-welcome">Welcome!</h2>
+                <p id="dash-role">Role: </p>
+
+                <div class="construction-card">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <strong>Dashboard Under Construction</strong>
+                    <div style="font-size: 12px; color: #666;">The user dashboard is currently being built by the Power Rangers. Check back soon!</div>
+                </div>
+
+                <div class="dashboard-card" style="margin-top: 20px;">
+                    <strong>Your Current Profile Data</strong>
+                    <div style="margin-top:8px; font-size:14px;">
+                        <div id="dash-fullname"></div>
+                        <div id="dash-username" style="color:#6b7280;"></div>
+                        <div id="dash-barangay" style="color:#6b7280;"></div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="margin-top:20px;" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div id="screen-success" class="screen" style="text-align: center;">
+                <div style="margin-top: 40px;"></div>
+                <i class="fas fa-check-circle success-icon"></i>
+                
+                <h2 class="success-heading">Success!</h2>
+                
+                <p class="welcome-big">Registration Complete!</p>
+                <p>You have successfully signed up for ElekSure.</p>
+
+                <button class="btn-primary" onclick="goToDashboardFromSuccess()" style="margin-top: 30px;">Go to Dashboard</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = "";
+
+        function togglePassword(fieldId, icon) {
+            const field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                field.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const el = document.getElementById(screenId);
+            if (el) el.classList.add('active');
+        }
+
+        // --- FORGOT PASSWORD LOGIC ---
+        function validateForgotPassword() {
+            const emailInput = document.getElementById('forgot-email');
+            const successBox = document.getElementById('forgot-success');
+            const errorBox = document.getElementById('forgot-error');
+
+            successBox.style.display = 'none';
+            errorBox.style.display = 'none';
+
+            // Check for empty OR invalid email structure
+            if (emailInput.value.trim() === "") {
+                errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter your email address.';
+                errorBox.style.display = 'flex'; 
+            } else if (!emailInput.value.includes('@') || !emailInput.value.includes('.')) {
+                // New Email Validation Check
+                errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a valid email address.';
+                errorBox.style.display = 'flex';
+            } else {
+                successBox.style.display = 'flex';
+            }
+        }
+
+        // --- VALIDATION LOGIC ---
+        
+        function checkStep1() {
+            const inputs = document.querySelectorAll('.required-step1');
+            const btn = document.getElementById('btn-step1');
+            let allFilled = true;
+            
+            inputs.forEach(input => {
+                if (input.value.trim() === "") {
+                    allFilled = false;
+                } else {
+                    input.classList.remove('input-error');
+                }
+            });
+            
+            if(allFilled) {
+                document.getElementById('step1-error').style.display = 'none';
+            }
+            
+            btn.disabled = !allFilled;
+        }
+
+        function checkStep2() {
+            const inputs = document.querySelectorAll('.required-step2');
+            const btn = document.getElementById('btn-step2');
+            let allFilled = true;
+            
+            inputs.forEach(input => {
+                if (input.value.trim() === "") {
+                    allFilled = false;
+                } else {
+                    input.classList.remove('input-error');
+                }
+            });
+            
+            const passValue = document.getElementById('reg-pass').value;
+            if (passValue.length > 0 && passValue.length < 8) {
+                document.getElementById('length-error').style.display = 'flex';
+                btn.disabled = true;
+                return; 
+            } else {
+                document.getElementById('length-error').style.display = 'none';
+            }
+
+            btn.disabled = !allFilled;
+        }
+
+        // ---------- localStorage helpers ----------
+        function getUsers() {
+          const raw = localStorage.getItem('eleksure_users');
+          return raw ? JSON.parse(raw) : [];
+        }
+        function saveUsers(users) {
+          localStorage.setItem('eleksure_users', JSON.stringify(users));
+        }
+        function setCurrentUser(userObj) {
+          localStorage.setItem('eleksure_currentUser', JSON.stringify(userObj));
+        }
+        function getCurrentUser() {
+          const raw = localStorage.getItem('eleksure_currentUser');
+          return raw ? JSON.parse(raw) : null;
+        }
+        function clearCurrentUser() {
+          localStorage.removeItem('eleksure_currentUser');
+        }
+
+        // ---------- Restore session on load ----------
+        window.addEventListener('DOMContentLoaded', () => {
+          const cur = getCurrentUser();
+          if (cur) {
+            openDashboard(cur);
+          } else {
+            showScreen('screen-login'); // default screen
+          }
+        });
+
+        // ---------- Clear Inputs Helper ----------
+        function clearForms() {
+            // Clear all text/password/email inputs
+            document.querySelectorAll('input[type="text"], input[type="password"], input[type="email"]').forEach(input => {
+                input.value = "";
+                input.classList.remove('input-error');
+            });
+            // Clear Selects
+            document.querySelectorAll('select').forEach(select => {
+                select.selectedIndex = 0;
+                select.classList.remove('input-error');
+            });
+            // Uncheck checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Hide all error/success messages
+            document.querySelectorAll('.error-msg, .success-msg').forEach(msg => msg.style.display = 'none');
+
+            // Disable buttons
+            document.getElementById('btn-step1').disabled = true;
+            document.getElementById('btn-step2').disabled = true;
+            document.getElementById('btn-step3').disabled = true;
+            document.getElementById('btn-register').disabled = true;
+
+            // Reset role selection
+            selectedRole = "";
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        }
+
+        // ---------- Registration: save user ----------
+        function finalizeRegistration() {
+          // Gather fields
+          const lastname = document.getElementById('reg-lastname').value.trim();
+          const firstname = document.getElementById('reg-firstname').value.trim();
+          const username = document.getElementById('reg-username').value.trim();
+          const email = document.getElementById('reg-email').value.trim().toLowerCase();
+          const barangay = document.getElementById('reg-barangay').value;
+          const password = document.getElementById('reg-pass').value;
+          const role = selectedRole || 'voter';
+
+          // Basic validation
+          if (!lastname || !firstname || !username || !email || !barangay || password.length < 8) {
+            alert('Please complete registration correctly.');
+            return;
+          }
+
+          // Check duplicates
+          const users = getUsers();
+          const existsUsername = users.some(u => u.username.toLowerCase() === username.toLowerCase());
+          const existsEmail = users.some(u => u.email === email);
+
+          if (existsUsername) {
+            alert('Username already taken. Please choose another.');
+            return;
+          }
+          if (existsEmail) {
+            alert('An account with that email already exists.');
+            return;
+          }
+
+          // Create user object
+          const userObj = {
+            id: Date.now(),
+            lastname,
+            firstname,
+            fullname: `${firstname} ${lastname}`,
+            username,
+            email,
+            barangay,
+            role,
+            password 
+          };
+
+          users.push(userObj);
+          saveUsers(users);
+
+          // Set current session
+          setCurrentUser({ id: userObj.id, username: userObj.username, fullname: userObj.fullname, role: userObj.role, email: userObj.email, barangay: userObj.barangay });
+          
+          showScreen('screen-success');
+        }
+
+        // ---------- Success -> Dashboard Transition ----------
+        function goToDashboardFromSuccess() {
+            // The user is already logged in (session set in finalizeRegistration)
+            // Just open the dashboard for them.
+            // But we must CLEAR the registration form inputs so they don't persist if they logout later.
+            clearForms(); 
+            openDashboard(getCurrentUser());
+        }
+
+        // ---------- Login: check stored users ----------
+        function validateLogin() {
+          const identifier = document.getElementById('login-user').value.trim();
+          const pass = document.getElementById('login-pass').value;
+          const errorBox = document.getElementById('login-error');
+
+          errorBox.style.display = 'none';
+
+          if (!identifier || !pass) {
+            errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Email/username and password cannot be empty.';
+            errorBox.style.display = 'flex';
+            return;
+          }
+
+          const users = getUsers();
+          // try match by username (case-insensitive) or by email (case-insensitive)
+          const matched = users.find(u => (u.username.toLowerCase() === identifier.toLowerCase()) || (u.email === identifier.toLowerCase()));
+
+          if (!matched || matched.password !== pass) {
+            errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Credentials do not match our records.';
+            errorBox.style.display = 'flex';
+            return;
+          }
+
+          // success: set session and open dashboard
+          setCurrentUser({ id: matched.id, username: matched.username, fullname: matched.fullname, role: matched.role, email: matched.email, barangay: matched.barangay });
+          
+          // FLOW: Login directly to Dashboard (Requirement 4)
+          openDashboard(matched);
+        }
+
+        // ---------- Open Dashboard and fill details ----------
+        function openDashboard(userObj) {
+          // If caller passed the compact currentUser object, try to find full user for fields
+          let full = userObj;
+          if (userObj && userObj.id) {
+            const users = getUsers();
+            const found = users.find(u => u.id === userObj.id);
+            if (found) full = found;
+          }
+
+          document.getElementById('dash-welcome').textContent = `Welcome, ${full.firstname || full.fullname || full.username}!`;
+          document.getElementById('dash-role').textContent = `Role: ${full.role || 'voter'}`;
+          document.getElementById('dash-fullname').textContent = `Name: ${full.fullname || (full.firstname + ' ' + full.lastname)}`;
+          document.getElementById('dash-username').textContent = `Username: ${full.username}`;
+          document.getElementById('dash-barangay').textContent = `Barangay: ${full.barangay}`;
+
+          showScreen('screen-dashboard');
+        }
+
+        // ---------- Sign Out ----------
+        function signOut() {
+          clearCurrentUser();
+          // SECURITY FIX: Wipe all inputs so next user sees a clean slate
+          clearForms();
+          showScreen('screen-login');
+        }
+
+        function goToSignup() { showScreen('screen-step1'); }
+        
+        function goToLogin() { 
+            // Also good practice to clear inputs when canceling registration to go to login
+            clearForms();
+            showScreen('screen-login'); 
+        }
+        
+        function goBackTo(stepNumber) {
+            showScreen('screen-step' + stepNumber);
+        }
+
+        function validateStep1() {
+            const inputs = document.querySelectorAll('.required-step1');
+            const emailInput = document.getElementById('reg-email');
+            const errorBox = document.getElementById('step1-error');
+            let hasError = false;
+
+            // Reset errors
+            errorBox.style.display = 'none';
+            inputs.forEach(i => i.classList.remove('input-error'));
+            
+            // 1. Check Empty fields
+            inputs.forEach(input => {
+                if (input.value.trim() === "") {
+                    input.classList.add('input-error');
+                    hasError = true;
+                }
+            });
+
+            // 2. Check Email format (basic)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailInput.value.trim() !== "" && !emailRegex.test(emailInput.value.trim())) {
+                emailInput.classList.add('input-error');
+                errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a valid email address.';
+                hasError = true;
+            }
+
+            if (hasError) {
+                if (!emailInput.classList.contains('input-error')) { // If error is just empty fields
+                     errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please fill in all required details.';
+                }
+                errorBox.style.display = 'flex';
+            } else {
+                showScreen('screen-step2');
+            }
+        }
+        
+        function validateStep2() {
+            const pass = document.getElementById('reg-pass').value;
+            const confirmPass = document.getElementById('reg-confirm-pass').value;
+            const passInput = document.getElementById('reg-pass');
+            const confirmPassInput = document.getElementById('reg-confirm-pass');
+            
+            // Reset errors
+            document.getElementById('pass-error').style.display = 'none';
+            document.getElementById('length-error').style.display = 'none';
+            passInput.classList.remove('input-error');
+            confirmPassInput.classList.remove('input-error');
+
+            if (pass.length < 8) {
+                document.getElementById('length-error').style.display = 'flex';
+                passInput.classList.add('input-error');
+            } else if (pass !== confirmPass) {
+                document.getElementById('pass-error').style.display = 'flex';
+                confirmPassInput.classList.add('input-error');
+            } else {
+                showScreen('screen-step3');
+            }
+        }
+        
+        function selectRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('role-' + role).classList.add('selected');
+            document.getElementById('btn-step3').disabled = false;
+        }
+
+        function validateStep3() {
+            if (selectedRole !== "") {
+                showScreen('screen-step4');
+            } else {
+                alert("Please select a role before proceeding."); 
+            }
+        }
+        
+        function toggleRegisterBtn() {
+            const isChecked = document.getElementById('terms-check').checked;
+            document.getElementById('btn-register').disabled = !isChecked;
+        }
+
+    </script>
+</body>
+</html>
